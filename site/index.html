@@ -1,9 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
-	<title>Hello Coursera!</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coursera学習スケジュール - Meta フロントエンド開発</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<h1>Hello Coursera! It's a great site!</h1>
+  <header class="header">
+    <div class="container">
+      <h1 class="header__title">Coursera 学習スケジュール管理</h1>
+      <p class="header__subtitle">Meta フロントエンド開発 プロフェッショナル認定</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="progress-overview" id="progress-overview">
+      <h2>全体の進捗</h2>
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="overall-progress-bar">
+          <span class="progress-text" id="overall-progress-text">0%</span>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat-card">
+          <span class="stat-value" id="stat-completed">0</span>
+          <span class="stat-label">完了コース</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="stat-in-progress">0</span>
+          <span class="stat-label">学習中</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="stat-remaining">9</span>
+          <span class="stat-label">未着手</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="stat-total-weeks">0</span>
+          <span class="stat-label">学習済み週数</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="schedule-settings">
+      <h2>スケジュール設定</h2>
+      <div class="settings-form">
+        <div class="form-group">
+          <label for="start-date">学習開始日</label>
+          <input type="date" id="start-date">
+        </div>
+        <div class="form-group">
+          <label for="hours-per-week">週あたりの学習時間（時間）</label>
+          <input type="number" id="hours-per-week" min="1" max="40" value="7">
+        </div>
+        <button class="btn btn--primary" id="generate-schedule">スケジュール生成</button>
+      </div>
+      <p class="schedule-estimate" id="schedule-estimate"></p>
+    </section>
+
+    <section class="course-list">
+      <h2>コース一覧</h2>
+      <div id="courses-container"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>Coursera 学習スケジュール管理アプリ - Meta フロントエンド開発プロフェッショナル認定</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
 </body>
 </html>
