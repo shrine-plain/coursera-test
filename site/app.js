@@ -1,5 +1,129 @@
 "use strict";
 
+// ======================
+// Authentication
+// ======================
+var AUTH_KEY = "coursera-meta-fe-auth";
+
+async function hashPassword(password) {
+  var encoder = new TextEncoder();
+  var data = encoder.encode(password);
+  var hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  var hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(function (b) { return b.toString(16).padStart(2, "0"); }).join("");
+}
+
+function getStoredHash() {
+  return localStorage.getItem(AUTH_KEY);
+}
+
+function isPasswordSet() {
+  return !!getStoredHash();
+}
+
+function isSessionUnlocked() {
+  return sessionStorage.getItem("coursera-unlocked") === "1";
+}
+
+function setSessionUnlocked(val) {
+  if (val) {
+    sessionStorage.setItem("coursera-unlocked", "1");
+  } else {
+    sessionStorage.removeItem("coursera-unlocked");
+  }
+}
+
+function showLockScreen() {
+  document.getElementById("lock-screen").style.display = "flex";
+  document.getElementById("app").style.display = "none";
+  document.getElementById("lock-error").textContent = "";
+
+  if (isPasswordSet()) {
+    document.getElementById("lock-form-login").style.display = "flex";
+    document.getElementById("lock-form-setup").style.display = "none";
+    document.getElementById("lock-subtitle").textContent = "パスワードを入力してください";
+    document.getElementById("lock-password").value = "";
+    document.getElementById("lock-password").focus();
+  } else {
+    document.getElementById("lock-form-login").style.display = "none";
+    document.getElementById("lock-form-setup").style.display = "flex";
+    document.getElementById("lock-subtitle").textContent = "はじめに";
+    document.getElementById("setup-password").value = "";
+    document.getElementById("setup-password-confirm").value = "";
+    document.getElementById("setup-password").focus();
+  }
+}
+
+function showApp() {
+  document.getElementById("lock-screen").style.display = "none";
+  document.getElementById("app").style.display = "block";
+}
+
+function initAuth() {
+  // Login form
+  document.getElementById("lock-submit").addEventListener("click", async function () {
+    var pw = document.getElementById("lock-password").value;
+    if (!pw) {
+      document.getElementById("lock-error").textContent = "パスワードを入力してください";
+      return;
+    }
+    var hash = await hashPassword(pw);
+    if (hash === getStoredHash()) {
+      setSessionUnlocked(true);
+      showApp();
+      init();
+    } else {
+      document.getElementById("lock-error").textContent = "パスワードが正しくありません";
+      document.getElementById("lock-password").value = "";
+      document.getElementById("lock-password").focus();
+    }
+  });
+
+  document.getElementById("lock-password").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") document.getElementById("lock-submit").click();
+  });
+
+  // Setup form
+  document.getElementById("setup-submit").addEventListener("click", async function () {
+    var pw1 = document.getElementById("setup-password").value;
+    var pw2 = document.getElementById("setup-password-confirm").value;
+    var errorEl = document.getElementById("lock-error");
+
+    if (pw1.length < 4) {
+      errorEl.textContent = "パスワードは4文字以上にしてください";
+      return;
+    }
+    if (pw1 !== pw2) {
+      errorEl.textContent = "パスワードが一致しません";
+      return;
+    }
+    var hash = await hashPassword(pw1);
+    localStorage.setItem(AUTH_KEY, hash);
+    setSessionUnlocked(true);
+    showApp();
+    init();
+  });
+
+  document.getElementById("setup-password-confirm").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") document.getElementById("setup-submit").click();
+  });
+
+  // Lock button
+  document.getElementById("lock-btn").addEventListener("click", function () {
+    setSessionUnlocked(false);
+    showLockScreen();
+  });
+
+  // Check session
+  if (isPasswordSet() && isSessionUnlocked()) {
+    showApp();
+    init();
+  } else {
+    showLockScreen();
+  }
+}
+
+// ======================
 // Meta フロントエンド開発プロフェッショナル認定 コースデータ
 const COURSES = [
   {
@@ -455,4 +579,4 @@ function init() {
   updateScheduleEstimate();
 }
 
-document.addEventListener("DOMContentLoaded", init);
+document.addEventListener("DOMContentLoaded", initAuth);

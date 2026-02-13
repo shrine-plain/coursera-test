@@ -7,10 +7,35 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Lock Screen -->
+  <div class="lock-screen" id="lock-screen">
+    <div class="lock-screen__card">
+      <div class="lock-screen__icon">&#128274;</div>
+      <h1 class="lock-screen__title">Coursera 学習スケジュール</h1>
+      <p class="lock-screen__subtitle" id="lock-subtitle">パスワードを入力してください</p>
+      <div class="lock-screen__form" id="lock-form-login">
+        <input type="password" class="lock-screen__input" id="lock-password" placeholder="パスワード" autocomplete="current-password">
+        <button class="btn btn--primary lock-screen__btn" id="lock-submit">ロック解除</button>
+      </div>
+      <div class="lock-screen__form" id="lock-form-setup" style="display:none">
+        <p class="lock-screen__hint">初回設定: このアプリを保護するパスワードを設定してください</p>
+        <input type="password" class="lock-screen__input" id="setup-password" placeholder="パスワード（4文字以上）" autocomplete="new-password">
+        <input type="password" class="lock-screen__input" id="setup-password-confirm" placeholder="パスワード（確認）" autocomplete="new-password">
+        <button class="btn btn--primary lock-screen__btn" id="setup-submit">設定する</button>
+      </div>
+      <p class="lock-screen__error" id="lock-error"></p>
+    </div>
+  </div>
+
+  <!-- App -->
+  <div id="app" style="display:none">
   <header class="header">
-    <div class="container">
-      <h1 class="header__title">Coursera 学習スケジュール管理</h1>
-      <p class="header__subtitle">Meta フロントエンド開発 プロフェッショナル認定</p>
+    <div class="container header__row">
+      <div>
+        <h1 class="header__title">Coursera 学習スケジュール管理</h1>
+        <p class="header__subtitle">Meta フロントエンド開発 プロフェッショナル認定</p>
+      </div>
+      <button class="btn btn--lock" id="lock-btn" title="ロック">&#128274; ロック</button>
     </div>
   </header>
 
@@ -69,6 +94,8 @@
       <p>Coursera 学習スケジュール管理アプリ - Meta フロントエンド開発プロフェッショナル認定</p>
     </div>
   </footer>
+
+  </div><!-- /app -->
 
   <script src="app.js"></script>
 </body>
