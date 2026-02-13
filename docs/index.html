@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coursera学習スケジュール - Meta フロントエンド開発</title>
+  <style>
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --color-primary: #0056d2;
+  --color-primary-dark: #003e99;
+  --color-primary-light: #e8f0fe;
+  --color-success: #28a745;
+  --color-warning: #f0ad4e;
+  --color-danger: #dc3545;
+  --color-bg: #f5f7fa;
+  --color-white: #ffffff;
+  --color-text: #1a1a2e;
+  --color-text-light: #6c757d;
+  --color-border: #dee2e6;
+  --radius: 8px;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: var(--color-white);
+  padding: 32px 0;
+  text-align: center;
+}
+
+.header__title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.header__subtitle {
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+/* Sections */
+section {
+  background: var(--color-white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  margin: 24px auto;
+  max-width: 960px;
+}
+
+section h2 {
+  font-size: 1.25rem;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--color-primary-light);
+}
+
+/* Progress Overview */
+.progress-bar-container {
+  background: var(--color-bg);
+  border-radius: 20px;
+  height: 32px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.progress-bar {
+  background: linear-gradient(90deg, var(--color-primary), var(--color-success));
+  height: 100%;
+  width: 0%;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: width 0.5s ease;
+  min-width: 40px;
+}
+
+.progress-text {
+  color: var(--color-white);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.stat-card {
+  background: var(--color-bg);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+}
+
+.stat-value {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--color-text-light);
+}
+
+/* Schedule Settings */
+.settings-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-light);
+}
+
+.form-group input {
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+  border-color: var(--color-primary);
+}
+
+.btn {
+  padding: 8px 20px;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn--primary {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+
+.btn--primary:hover {
+  background: var(--color-primary-dark);
+}
+
+.btn--small {
+  padding: 4px 12px;
+  font-size: 0.8rem;
+}
+
+.schedule-estimate {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  color: var(--color-text-light);
+}
+
+/* Course Cards */
+.course-card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.course-card:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+.course-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  cursor: pointer;
+  gap: 12px;
+}
+
+.course-card__header:hover {
+  background: var(--color-primary-light);
+}
+
+.course-card__info {
+  flex: 1;
+}
+
+.course-card__number {
+  display: inline-block;
+  background: var(--color-primary);
+  color: var(--color-white);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 28px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.course-card__title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.course-card__meta {
+  font-size: 0.8rem;
+  color: var(--color-text-light);
+  margin-top: 2px;
+}
+
+.course-card__status {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.course-card__status--not-started {
+  background: var(--color-bg);
+  color: var(--color-text-light);
+}
+
+.course-card__status--in-progress {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.course-card__status--completed {
+  background: #d4edda;
+  color: #155724;
+}
+
+.course-card__toggle {
+  font-size: 1.2rem;
+  color: var(--color-text-light);
+  transition: transform 0.3s;
+  flex-shrink: 0;
+}
+
+.course-card__toggle--open {
+  transform: rotate(180deg);
+}
+
+.course-card__body {
+  display: none;
+  padding: 0 16px 16px;
+  border-top: 1px solid var(--color-border);
+}
+
+.course-card__body--open {
+  display: block;
+}
+
+.course-card__schedule {
+  font-size: 0.85rem;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.course-card__progress {
+  margin-bottom: 12px;
+}
+
+.course-card__progress .progress-bar-container {
+  height: 10px;
+  margin-bottom: 4px;
+}
+
+.course-card__progress .progress-bar {
+  min-width: 0;
+}
+
+.course-card__progress-label {
+  font-size: 0.8rem;
+  color: var(--color-text-light);
+}
+
+/* Week Items */
+.week-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-bg);
+}
+
+.week-item:last-child {
+  border-bottom: none;
+}
+
+.week-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.week-item__info {
+  flex: 1;
+}
+
+.week-item__title {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.week-item__title--completed {
+  text-decoration: line-through;
+  color: var(--color-text-light);
+}
+
+.week-item__detail {
+  font-size: 0.75rem;
+  color: var(--color-text-light);
+}
+
+/* Notes */
+.course-card__notes {
+  margin-top: 12px;
+}
+
+.course-card__notes textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: 0.85rem;
+  resize: vertical;
+  min-height: 60px;
+  outline: none;
+}
+
+.course-card__notes textarea:focus {
+  border-color: var(--color-primary);
+}
+
+.course-card__notes label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-light);
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* Lock Screen */
+.lock-screen {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.lock-screen__card {
+  background: var(--color-white);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  padding: 40px 36px;
+  text-align: center;
+  width: 100%;
+  max-width: 380px;
+  margin: 0 20px;
+}
+
+.lock-screen__icon {
+  font-size: 3rem;
+  margin-bottom: 12px;
+}
+
+.lock-screen__title {
+  font-size: 1.3rem;
+  margin-bottom: 4px;
+}
+
+.lock-screen__subtitle {
+  font-size: 0.9rem;
+  color: var(--color-text-light);
+  margin-bottom: 20px;
+}
+
+.lock-screen__hint {
+  font-size: 0.8rem;
+  color: var(--color-text-light);
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.lock-screen__form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lock-screen__input {
+  padding: 10px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-size: 1rem;
+  outline: none;
+  text-align: center;
+  transition: border-color 0.2s;
+}
+
+.lock-screen__input:focus {
+  border-color: var(--color-primary);
+}
+
+.lock-screen__btn {
+  padding: 10px;
+  font-size: 1rem;
+  margin-top: 4px;
+}
+
+.lock-screen__error {
+  color: var(--color-danger);
+  font-size: 0.85rem;
+  margin-top: 12px;
+  min-height: 1.2em;
+}
+
+/* Header lock button */
+.header__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn--lock {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--color-white);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  font-size: 0.85rem;
+  padding: 6px 14px;
+}
+
+.btn--lock:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 24px 0;
+  color: var(--color-text-light);
+  font-size: 0.85rem;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .header__title {
+    font-size: 1.3rem;
+  }
+
+  .settings-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .course-card__header {
+    flex-wrap: wrap;
+  }
+}
+  </style>
+</head>
+<body>
+  <!-- Lock Screen -->
+  <div class="lock-screen" id="lock-screen">
+    <div class="lock-screen__card">
+      <div class="lock-screen__icon">&#128274;</div>
+      <h1 class="lock-screen__title">Coursera 学習スケジュール</h1>
+      <p class="lock-screen__subtitle" id="lock-subtitle">パスワードを入力してください</p>
+      <div class="lock-screen__form" id="lock-form-login">
+        <input type="password" class="lock-screen__input" id="lock-password" placeholder="パスワード" autocomplete="current-password">
+        <button class="btn btn--primary lock-screen__btn" id="lock-submit">ロック解除</button>
+      </div>
+      <div class="lock-screen__form" id="lock-form-setup" style="display:none">
+        <p class="lock-screen__hint">初回設定: このアプリを保護するパスワードを設定してください</p>
+        <input type="password" class="lock-screen__input" id="setup-password" placeholder="パスワード（4文字以上）" autocomplete="new-password">
+        <input type="password" class="lock-screen__input" id="setup-password-confirm" placeholder="パスワード（確認）" autocomplete="new-password">
+        <button class="btn btn--primary lock-screen__btn" id="setup-submit">設定する</button>
+      </div>
+      <p class="lock-screen__error" id="lock-error"></p>
+    </div>
+  </div>
+
+  <!-- App -->
+  <div id="app" style="display:none">
+  <header class="header">
+    <div class="container header__row">
+      <div>
+        <h1 class="header__title">Coursera 学習スケジュール管理</h1>
+        <p class="header__subtitle">Meta フロントエンド開発 プロフェッショナル認定</p>
+      </div>
+      <button class="btn btn--lock" id="lock-btn" title="ロック">&#128274; ロック</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="progress-overview" id="progress-overview">
+      <h2>全体の進捗</h2>
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="overall-progress-bar">
+          <span class="progress-text" id="overall-progress-text">0%</span>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat-card">
+          <span class="stat-value" id="stat-completed">0</span>
+          <span class="stat-label">完了コース</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="stat-in-progress">0</span>
+          <span class="stat-label">学習中</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="stat-remaining">9</span>
+          <span class="stat-label">未着手</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="stat-total-weeks">0</span>
+          <span class="stat-label">学習済み週数</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="schedule-settings">
+      <h2>スケジュール設定</h2>
+      <div class="settings-form">
+        <div class="form-group">
+          <label for="start-date">学習開始日</label>
+          <input type="date" id="start-date">
+        </div>
+        <div class="form-group">
+          <label for="hours-per-week">週あたりの学習時間（時間）</label>
+          <input type="number" id="hours-per-week" min="1" max="40" value="7">
+        </div>
+        <button class="btn btn--primary" id="generate-schedule">スケジュール生成</button>
+      </div>
+      <p class="schedule-estimate" id="schedule-estimate"></p>
+    </section>
+
+    <section class="course-list">
+      <h2>コース一覧</h2>
+      <div id="courses-container"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>Coursera 学習スケジュール管理アプリ - Meta フロントエンド開発プロフェッショナル認定</p>
+    </div>
+  </footer>
+
+  </div><!-- /app -->
+
+  <script>
+"use strict";
+
+// ======================
+// Authentication
+// ======================
+var AUTH_KEY = "coursera-meta-fe-auth";
+
+async function hashPassword(password) {
+  var encoder = new TextEncoder();
+  var data = encoder.encode(password);
+  var hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  var hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(function (b) { return b.toString(16).padStart(2, "0"); }).join("");
+}
+
+function getStoredHash() {
+  return localStorage.getItem(AUTH_KEY);
+}
+
+function isPasswordSet() {
+  return !!getStoredHash();
+}
+
+function isSessionUnlocked() {
+  return sessionStorage.getItem("coursera-unlocked") === "1";
+}
+
+function setSessionUnlocked(val) {
+  if (val) {
+    sessionStorage.setItem("coursera-unlocked", "1");
+  } else {
+    sessionStorage.removeItem("coursera-unlocked");
+  }
+}
+
+function showLockScreen() {
+  document.getElementById("lock-screen").style.display = "flex";
+  document.getElementById("app").style.display = "none";
+  document.getElementById("lock-error").textContent = "";
+
+  if (isPasswordSet()) {
+    document.getElementById("lock-form-login").style.display = "flex";
+    document.getElementById("lock-form-setup").style.display = "none";
+    document.getElementById("lock-subtitle").textContent = "パスワードを入力してください";
+    document.getElementById("lock-password").value = "";
+    document.getElementById("lock-password").focus();
+  } else {
+    document.getElementById("lock-form-login").style.display = "none";
+    document.getElementById("lock-form-setup").style.display = "flex";
+    document.getElementById("lock-subtitle").textContent = "はじめに";
+    document.getElementById("setup-password").value = "";
+    document.getElementById("setup-password-confirm").value = "";
+    document.getElementById("setup-password").focus();
+  }
+}
+
+function showApp() {
+  document.getElementById("lock-screen").style.display = "none";
+  document.getElementById("app").style.display = "block";
+}
+
+function initAuth() {
+  // Login form
+  document.getElementById("lock-submit").addEventListener("click", async function () {
+    var pw = document.getElementById("lock-password").value;
+    if (!pw) {
+      document.getElementById("lock-error").textContent = "パスワードを入力してください";
+      return;
+    }
+    var hash = await hashPassword(pw);
+    if (hash === getStoredHash()) {
+      setSessionUnlocked(true);
+      showApp();
+      init();
+    } else {
+      document.getElementById("lock-error").textContent = "パスワードが正しくありません";
+      document.getElementById("lock-password").value = "";
+      document.getElementById("lock-password").focus();
+    }
+  });
+
+  document.getElementById("lock-password").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") document.getElementById("lock-submit").click();
+  });
+
+  // Setup form
+  document.getElementById("setup-submit").addEventListener("click", async function () {
+    var pw1 = document.getElementById("setup-password").value;
+    var pw2 = document.getElementById("setup-password-confirm").value;
+    var errorEl = document.getElementById("lock-error");
+
+    if (pw1.length < 4) {
+      errorEl.textContent = "パスワードは4文字以上にしてください";
+      return;
+    }
+    if (pw1 !== pw2) {
+      errorEl.textContent = "パスワードが一致しません";
+      return;
+    }
+    var hash = await hashPassword(pw1);
+    localStorage.setItem(AUTH_KEY, hash);
+    setSessionUnlocked(true);
+    showApp();
+    init();
+  });
+
+  document.getElementById("setup-password-confirm").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") document.getElementById("setup-submit").click();
+  });
+
+  // Lock button
+  document.getElementById("lock-btn").addEventListener("click", function () {
+    setSessionUnlocked(false);
+    showLockScreen();
+  });
+
+  // Check session
+  if (isPasswordSet() && isSessionUnlocked()) {
+    showApp();
+    init();
+  } else {
+    showLockScreen();
+  }
+}
+
+// ======================
+// Meta フロントエンド開発プロフェッショナル認定 コースデータ
+const COURSES = [
+  {
+    id: 1,
+    title: "Introduction to Front-End Development",
+    titleJa: "フロントエンド開発入門",
+    weeks: [
+      { title: "Get started with web development", hours: 4 },
+      { title: "Introduction to HTML and CSS", hours: 3 },
+      { title: "UI Frameworks", hours: 5 },
+      { title: "End-of-Course Graded Assessment", hours: 3 },
+    ],
+  },
+  {
+    id: 2,
+    title: "Programming with JavaScript",
+    titleJa: "JavaScriptプログラミング",
+    weeks: [
+      { title: "Introduction to JavaScript", hours: 4 },
+      { title: "The Building Blocks of a Program", hours: 3 },
+      { title: "Programming Paradigms", hours: 4 },
+      { title: "Testing & Compatibility", hours: 4 },
+      { title: "End-of-Course Graded Assessment", hours: 3 },
+    ],
+  },
+  {
+    id: 3,
+    title: "Version Control",
+    titleJa: "バージョン管理",
+    weeks: [
+      { title: "Software collaboration", hours: 5 },
+      { title: "Command Line", hours: 3 },
+      { title: "Working with Git", hours: 5 },
+      { title: "End-of-Course Graded Assessment", hours: 3 },
+    ],
+  },
+  {
+    id: 4,
+    title: "HTML and CSS in Depth",
+    titleJa: "HTML・CSS 応用",
+    weeks: [
+      { title: "HTML in depth", hours: 5 },
+      { title: "Interactive CSS", hours: 5 },
+      { title: "Graded Assessment", hours: 3 },
+    ],
+  },
+  {
+    id: 5,
+    title: "React Basics",
+    titleJa: "React 基礎",
+    weeks: [
+      { title: "React Components", hours: 5 },
+      { title: "Data and State", hours: 4 },
+      { title: "Navigation, Updating and Assets in React", hours: 5 },
+      { title: "Your first React app", hours: 3 },
+    ],
+  },
+  {
+    id: 6,
+    title: "Advanced React",
+    titleJa: "React 応用",
+    weeks: [
+      { title: "Components", hours: 4 },
+      { title: "React Hooks and Custom Hooks", hours: 4 },
+      { title: "JSX and Testing", hours: 4 },
+      { title: "Final Project", hours: 3 },
+    ],
+  },
+  {
+    id: 7,
+    title: "Principles of UX/UI Design",
+    titleJa: "UX/UIデザインの原則",
+    weeks: [
+      { title: "Introduction to UX and UI design", hours: 4 },
+      { title: "Evaluating interactive design", hours: 4 },
+      { title: "Applied Design Fundamentals", hours: 5 },
+      { title: "Designing your UI", hours: 5 },
+    ],
+  },
+  {
+    id: 8,
+    title: "Front-End Developer Capstone",
+    titleJa: "フロントエンド開発キャップストーン",
+    weeks: [
+      { title: "Starting the project", hours: 3 },
+      { title: "Project foundations", hours: 5 },
+      { title: "Project functionality", hours: 5 },
+      { title: "Project Assessment", hours: 4 },
+    ],
+  },
+  {
+    id: 9,
+    title: "Coding Interview Preparation",
+    titleJa: "コーディング面接対策",
+    weeks: [
+      { title: "Introduction to the coding interview", hours: 5 },
+      { title: "Introduction to Data Structures", hours: 4 },
+      { title: "Introduction to Algorithms", hours: 3 },
+      { title: "Final project", hours: 4 },
+    ],
+  },
+];
+
+const STORAGE_KEY = "coursera-meta-fe-schedule";
+
+// State
+let state = loadState();
+
+function getDefaultState() {
+  return {
+    startDate: "",
+    hoursPerWeek: 7,
+    progress: {},
+    notes: {},
+  };
+}
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      return JSON.parse(saved);
+    }
+  } catch (e) {
+    // ignore parse errors
+  }
+  return getDefaultState();
+}
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (e) {
+    // ignore storage errors
+  }
+}
+
+function isWeekCompleted(courseId, weekIndex) {
+  const key = courseId + "-" + weekIndex;
+  return !!state.progress[key];
+}
+
+function setWeekCompleted(courseId, weekIndex, completed) {
+  const key = courseId + "-" + weekIndex;
+  state.progress[key] = completed;
+  saveState();
+}
+
+function getCourseProgress(course) {
+  let completed = 0;
+  for (let i = 0; i < course.weeks.length; i++) {
+    if (isWeekCompleted(course.id, i)) {
+      completed++;
+    }
+  }
+  return completed;
+}
+
+function getCourseStatus(course) {
+  const completed = getCourseProgress(course);
+  if (completed === 0) return "not-started";
+  if (completed === course.weeks.length) return "completed";
+  return "in-progress";
+}
+
+function getStatusLabel(status) {
+  switch (status) {
+    case "completed":
+      return "完了";
+    case "in-progress":
+      return "学習中";
+    default:
+      return "未着手";
+  }
+}
+
+function getCourseTotalHours(course) {
+  return course.weeks.reduce(function (sum, w) {
+    return sum + w.hours;
+  }, 0);
+}
+
+function getTotalHours() {
+  return COURSES.reduce(function (sum, c) {
+    return sum + getCourseTotalHours(c);
+  }, 0);
+}
+
+function calculateScheduleDates(startDate, hoursPerWeek) {
+  if (!startDate || !hoursPerWeek) return null;
+
+  var dates = [];
+  var currentDate = new Date(startDate);
+
+  COURSES.forEach(function (course) {
+    var courseStart = new Date(currentDate);
+    course.weeks.forEach(function (week) {
+      var weeksNeeded = Math.ceil(week.hours / hoursPerWeek);
+      var weekStart = new Date(currentDate);
+      currentDate.setDate(currentDate.getDate() + weeksNeeded * 7);
+      dates.push({
+        courseId: course.id,
+        weekStart: weekStart,
+        weekEnd: new Date(currentDate),
+      });
+    });
+    dates.push({ courseId: course.id, courseStart: courseStart, courseEnd: new Date(currentDate) });
+  });
+
+  return {
+    dates: dates,
+    endDate: new Date(currentDate),
+  };
+}
+
+function formatDate(date) {
+  var y = date.getFullYear();
+  var m = String(date.getMonth() + 1).padStart(2, "0");
+  var d = String(date.getDate()).padStart(2, "0");
+  return y + "/" + m + "/" + d;
+}
+
+// Rendering
+function updateOverallProgress() {
+  var totalWeeks = 0;
+  var completedWeeks = 0;
+  var completedCourses = 0;
+  var inProgressCourses = 0;
+
+  COURSES.forEach(function (course) {
+    totalWeeks += course.weeks.length;
+    var progress = getCourseProgress(course);
+    completedWeeks += progress;
+    var status = getCourseStatus(course);
+    if (status === "completed") completedCourses++;
+    if (status === "in-progress") inProgressCourses++;
+  });
+
+  var percent = totalWeeks > 0 ? Math.round((completedWeeks / totalWeeks) * 100) : 0;
+  var remaining = COURSES.length - completedCourses - inProgressCourses;
+
+  document.getElementById("overall-progress-bar").style.width = Math.max(percent, 3) + "%";
+  document.getElementById("overall-progress-text").textContent = percent + "%";
+  document.getElementById("stat-completed").textContent = completedCourses;
+  document.getElementById("stat-in-progress").textContent = inProgressCourses;
+  document.getElementById("stat-remaining").textContent = remaining;
+  document.getElementById("stat-total-weeks").textContent = completedWeeks;
+}
+
+function renderCourses() {
+  var container = document.getElementById("courses-container");
+  container.innerHTML = "";
+
+  var scheduleDates = null;
+  if (state.startDate && state.hoursPerWeek) {
+    scheduleDates = calculateScheduleDates(state.startDate, state.hoursPerWeek);
+  }
+
+  COURSES.forEach(function (course, courseIndex) {
+    var status = getCourseStatus(course);
+    var completedCount = getCourseProgress(course);
+    var totalHours = getCourseTotalHours(course);
+    var progressPercent = Math.round((completedCount / course.weeks.length) * 100);
+
+    var card = document.createElement("div");
+    card.className = "course-card";
+
+    // Find schedule info for this course
+    var courseSchedule = null;
+    if (scheduleDates) {
+      var courseDates = scheduleDates.dates.filter(function (d) {
+        return d.courseId === course.id && d.courseStart;
+      });
+      if (courseDates.length > 0) {
+        courseSchedule = courseDates[0];
+      }
+    }
+
+    // Header
+    var header = document.createElement("div");
+    header.className = "course-card__header";
+    header.innerHTML =
+      '<span class="course-card__number">' + course.id + "</span>" +
+      '<div class="course-card__info">' +
+        '<div class="course-card__title">' + escapeHtml(course.title) + "</div>" +
+        '<div class="course-card__meta">' +
+          escapeHtml(course.titleJa) + " | " + course.weeks.length + "週 | 約" + totalHours + "時間" +
+        "</div>" +
+      "</div>" +
+      '<span class="course-card__status course-card__status--' + status + '">' +
+        getStatusLabel(status) +
+      "</span>" +
+      '<span class="course-card__toggle">&#9660;</span>';
+
+    header.addEventListener("click", function () {
+      var body = card.querySelector(".course-card__body");
+      var toggle = card.querySelector(".course-card__toggle");
+      body.classList.toggle("course-card__body--open");
+      toggle.classList.toggle("course-card__toggle--open");
+    });
+
+    card.appendChild(header);
+
+    // Body
+    var body = document.createElement("div");
+    body.className = "course-card__body";
+
+    // Schedule info
+    if (courseSchedule) {
+      var schedDiv = document.createElement("div");
+      schedDiv.className = "course-card__schedule";
+      schedDiv.textContent =
+        "予定期間: " + formatDate(courseSchedule.courseStart) + " ～ " + formatDate(courseSchedule.courseEnd);
+      body.appendChild(schedDiv);
+    }
+
+    // Course progress bar
+    var progressDiv = document.createElement("div");
+    progressDiv.className = "course-card__progress";
+    progressDiv.innerHTML =
+      '<div class="progress-bar-container">' +
+        '<div class="progress-bar" style="width:' + Math.max(progressPercent, 0) + '%"></div>' +
+      "</div>" +
+      '<span class="course-card__progress-label">' +
+        completedCount + " / " + course.weeks.length + " 週完了 (" + progressPercent + "%)" +
+      "</span>";
+    body.appendChild(progressDiv);
+
+    // Week items
+    course.weeks.forEach(function (week, weekIndex) {
+      var completed = isWeekCompleted(course.id, weekIndex);
+
+      var weekItem = document.createElement("div");
+      weekItem.className = "week-item";
+
+      var checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = completed;
+      checkbox.addEventListener("change", function () {
+        setWeekCompleted(course.id, weekIndex, this.checked);
+        renderCourses();
+        updateOverallProgress();
+      });
+
+      var infoDiv = document.createElement("div");
+      infoDiv.className = "week-item__info";
+
+      var titleSpan = document.createElement("span");
+      titleSpan.className = "week-item__title" + (completed ? " week-item__title--completed" : "");
+      titleSpan.textContent = "Week " + (weekIndex + 1) + ": " + week.title;
+
+      var detailSpan = document.createElement("span");
+      detailSpan.className = "week-item__detail";
+      detailSpan.textContent = "約" + week.hours + "時間";
+
+      // Week schedule
+      if (scheduleDates) {
+        var weekDates = scheduleDates.dates.filter(function (d) {
+          return d.courseId === course.id && !d.courseStart;
+        });
+        if (weekDates[weekIndex]) {
+          detailSpan.textContent +=
+            " | " + formatDate(weekDates[weekIndex].weekStart) + "～" + formatDate(weekDates[weekIndex].weekEnd);
+        }
+      }
+
+      infoDiv.appendChild(titleSpan);
+      infoDiv.appendChild(detailSpan);
+
+      weekItem.appendChild(checkbox);
+      weekItem.appendChild(infoDiv);
+      body.appendChild(weekItem);
+    });
+
+    // Notes
+    var notesDiv = document.createElement("div");
+    notesDiv.className = "course-card__notes";
+    var notesLabel = document.createElement("label");
+    notesLabel.textContent = "メモ";
+    var notesTextarea = document.createElement("textarea");
+    notesTextarea.placeholder = "このコースのメモを入力...";
+    notesTextarea.value = state.notes[course.id] || "";
+    notesTextarea.addEventListener("input", function () {
+      state.notes[course.id] = this.value;
+      saveState();
+    });
+    notesDiv.appendChild(notesLabel);
+    notesDiv.appendChild(notesTextarea);
+    body.appendChild(notesDiv);
+
+    card.appendChild(body);
+    container.appendChild(card);
+  });
+}
+
+function updateScheduleEstimate() {
+  var el = document.getElementById("schedule-estimate");
+  if (!state.startDate || !state.hoursPerWeek) {
+    el.textContent = "";
+    return;
+  }
+
+  var schedule = calculateScheduleDates(state.startDate, state.hoursPerWeek);
+  if (schedule) {
+    var totalHours = getTotalHours();
+    var totalWeeksNeeded = Math.ceil(totalHours / state.hoursPerWeek);
+    el.textContent =
+      "合計約" + totalHours + "時間 | 週" + state.hoursPerWeek + "時間で約" +
+      totalWeeksNeeded + "週間 | 完了予定日: " + formatDate(schedule.endDate);
+  }
+}
+
+function escapeHtml(text) {
+  var div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// Initialization
+function init() {
+  // Restore settings
+  var startDateInput = document.getElementById("start-date");
+  var hoursInput = document.getElementById("hours-per-week");
+
+  if (state.startDate) {
+    startDateInput.value = state.startDate;
+  } else {
+    // Default to today
+    var today = new Date();
+    var yyyy = today.getFullYear();
+    var mm = String(today.getMonth() + 1).padStart(2, "0");
+    var dd = String(today.getDate()).padStart(2, "0");
+    startDateInput.value = yyyy + "-" + mm + "-" + dd;
+    state.startDate = startDateInput.value;
+  }
+
+  if (state.hoursPerWeek) {
+    hoursInput.value = state.hoursPerWeek;
+  }
+
+  // Generate schedule button
+  document.getElementById("generate-schedule").addEventListener("click", function () {
+    state.startDate = startDateInput.value;
+    state.hoursPerWeek = parseInt(hoursInput.value, 10) || 7;
+    saveState();
+    renderCourses();
+    updateScheduleEstimate();
+  });
+
+  // Initial render
+  renderCourses();
+  updateOverallProgress();
+  updateScheduleEstimate();
+}
+
+document.addEventListener("DOMContentLoaded", initAuth);
+  </script>
+</body>
+</html>
